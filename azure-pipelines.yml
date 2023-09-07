@@ -39,7 +39,12 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
-    ## Add the below snippet at the end of your pipeline
+- stage: Deploy
+  displayName: Build stage
+  jobs:
+  - job: Deploy
+    displayName: Deploy
+    steps:
     - task: AzureWebAppContainer@1
       displayName: 'Deploy stage'
       inputs:
