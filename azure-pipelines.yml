@@ -23,7 +23,7 @@ variables:
 
 stages:
 - stage: Build
-  displayName: Build and push stage
+  displayName: Build stage
   jobs:
   - job: Build
     displayName: Build
@@ -31,7 +31,7 @@ stages:
       vmImage: $(vmImageName)
     steps:
     - task: Docker@2
-      displayName: Build and push an image to container registry
+      displayName: Push stage
       inputs:
         command: buildAndPush
         repository: $(imageRepository)
@@ -41,7 +41,7 @@ stages:
           $(tag)
     ## Add the below snippet at the end of your pipeline
     - task: AzureWebAppContainer@1
-      displayName: 'Azure Web App on Container Deploy'
+      displayName: 'Deploy stage'
       inputs:
         azureSubscription: $(azureSubscription)
         appName: $(appName)
