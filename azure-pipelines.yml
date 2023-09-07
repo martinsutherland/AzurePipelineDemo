@@ -15,6 +15,8 @@ variables:
   containerRegistry: 'customersapp.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
+  appName: 'Azure-test-App-Two'
+  azureSubscription: 'Azure subscription 1 (12d4a125-7d4d-45ad-8101-2ba4e5ce1593)'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -37,3 +39,10 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
+    ## Add the below snippet at the end of your pipeline
+    - task: AzureWebAppContainer@1
+      displayName: 'Azure Web App on Container Deploy'
+      inputs:
+        azureSubscription: $(azureSubscription)
+        appName: $(appName)
+        imageName: $(containerRegistry)/$(imageRepository):$(tag)
