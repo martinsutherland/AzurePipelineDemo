@@ -13,41 +13,38 @@ variables:
   appName: "Azure-test-App-Two"
   azureSubscription: "Azure subscription 1 (12d4a125-7d4d-45ad-8101-2ba4e5ce1593)"
   vmImageName: "ubuntu-latest"
-  uiSource: '/src'
+  uiSource: "/src"
 
 stages:
-
   - stage: Test
     displayName: Test stage
     jobs:
       - job: BuildAndRunDocker
         displayName: Build and Run Docker Container
         steps:
-        - script: |
-            # Build the Docker image
-            docker build -t docker-app .
+          - script: |
 
-            # Run the Docker container
-            docker run -p 3000:3000 -d --name docker-app-container docker-app
-          displayName: 'Build and Run Docker'
+              docker build -t docker-app .
+
+
+              docker run -p 3000:3000 -d --name docker-app-container docker-app
 
       - job: RunTestsInDocker
         displayName: Run Tests in Docker Container
         steps:
-        - script: |
-            # Execute your tests within the running Docker container
-            docker exec docker-app-container npx playwright test /tests/example.spec.ts
-          displayName: 'Run Tests in Docker'
+          - script: |
+
+              docker exec docker-app-container npx playwright test /tests/example.spec.ts
+            displayName: "Run Tests in Docker"
 
       - job: StopDockerContainer
         displayName: Stop Docker Container
         steps:
-        - script: |
-            # Stop and remove the Docker container
-            docker stop docker-app-container
-            docker rm docker-app-container
-          displayName: 'Stop Docker Container'
+          - script: |
 
+              docker stop docker-app-container
+              docker rm docker-app-container
+            displayName: "Stop Docker Container"
 
   - stage: Build
     displayName: Build stage
@@ -66,8 +63,6 @@ stages:
               containerRegistry: $(dockerRegistryServiceConnection)
               tags: |
                 $(tag)
-
-
 
   - stage: Deploy
     displayName: Deploy
