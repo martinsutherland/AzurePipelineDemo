@@ -20,6 +20,7 @@ stages:
     displayName: Build React App
     jobs:
       - job: BuildReactApp
+        timeoutInMinutes: '2'
         displayName: Build and Run React App
         pool:
           vmImage: $(vmImageName)
