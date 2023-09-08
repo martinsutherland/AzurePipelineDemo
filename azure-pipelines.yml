@@ -40,7 +40,7 @@ stages:
         steps:
           - bash: echo "Hello, World!"
 
-  - stage: Build and Push
+  - stage: Build
     displayName: Build stage
     jobs:
       - job: Build
