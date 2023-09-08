@@ -17,15 +17,37 @@ variables:
 
 stages:
 
-
-  - stage: Test
-    displayName: Test
+  - stage: Build
+    displayName: Build stage
     jobs:
-      - job: Test
-        displayName: Test
+      - job: BuildAndRunDocker
+        displayName: Build and Run Docker Container
         steps:
-          - script: |
-              npx playwright test /tests/example.spec.ts
+        - script: |
+            # Build the Docker image
+            docker build -t docker-app .
+
+            # Run the Docker container
+            docker run -p 3000:3000 -d --name docker-app-container docker-app
+          displayName: 'Build and Run Docker'
+
+      - job: RunTestsInDocker
+        displayName: Run Tests in Docker Container
+        steps:
+        - script: |
+            # Execute your tests within the running Docker container
+            docker exec docker-app-container npx playwright test /tests/example.spec.ts
+          displayName: 'Run Tests in Docker'
+
+      - job: StopDockerContainer
+        displayName: Stop Docker Container
+        steps:
+        - script: |
+            # Stop and remove the Docker container
+            docker stop docker-app-container
+            docker rm docker-app-container
+          displayName: 'Stop Docker Container'
+
 
   - stage: Build
     displayName: Build stage
