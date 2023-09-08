@@ -16,34 +16,27 @@ variables:
   uiSource: '/src'
 
 stages:
-  - stage: Build_Test
-    displayName: Build React App
+
+
+  - stage: Test
+    displayName: Test
     jobs:
-      - job: BuildReactApp
-        timeoutInMinutes: '2'
-        displayName: Build and Run React App
-        pool:
-          vmImage: $(vmImageName)
+      - job: Test
+        displayName: Test
         steps:
           - script: |
-              pushd $(uiSource)
-              npm install
-              npm run build
-              npm start
               npx playwright test /tests/example.spec.ts
-            displayName: "Build and Run React App"
-            workingDirectory: $(Build.SourcesDirectory)
 
-  - stage: Docker_Build
-    displayName: Docker Build stage
+  - stage: Build
+    displayName: Build stage
     jobs:
       - job: Build
-        displayName: Docker Build
+        displayName: Build
         pool:
           vmImage: $(vmImageName)
         steps:
           - task: Docker@2
-            displayName: Docker push
+            displayName: Push stage
             inputs:
               command: buildAndPush
               repository: $(imageRepository)
@@ -51,6 +44,8 @@ stages:
               containerRegistry: $(dockerRegistryServiceConnection)
               tags: |
                 $(tag)
+
+
 
   - stage: Deploy
     displayName: Deploy
