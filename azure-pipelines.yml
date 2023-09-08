@@ -16,7 +16,7 @@ variables:
   uiSource: '/src'
 
 stages:
-  - stage: Build and Test
+  - stage: Build_Test
     displayName: Build React App
     jobs:
       - job: BuildReactApp
@@ -34,7 +34,7 @@ stages:
             displayName: "Build and Run React App"
             workingDirectory: $(Build.SourcesDirectory)
 
-  - stage: Docker Build
+  - stage: Docker_Build
     displayName: Docker Build stage
     jobs:
       - job: Build
