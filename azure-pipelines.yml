@@ -49,19 +49,6 @@ stages:
         tags: |
           $(tag)
 
-- stage: Test
-  displayName: Test stage
-  jobs:
-  - job: Test
-    displayName: Test
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - task: test@
-      displayName: Test
-      inputs:
-        command: echo 'Hello, World'
-
 - stage: Deploy
   displayName: Deploy stage
   jobs:
