@@ -17,8 +17,8 @@ variables:
 
 stages:
 
-  - stage: Build
-    displayName: Build stage
+  - stage: Test
+    displayName: Test stage
     jobs:
       - job: BuildAndRunDocker
         displayName: Build and Run Docker Container
