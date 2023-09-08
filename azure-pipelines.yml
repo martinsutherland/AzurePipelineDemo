@@ -1,12 +1,8 @@
-# Docker
-# Build and push an image to Azure Container Registry
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 trigger:
 - main
 resources:
 - repo: self
 variables:
-  # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '70193de8-17c3-4d45-aed9-7b6d459cb210'
   imageRepository: 'martinsutherlandazurepipelinedemo'
   containerRegistry: 'customersapp.azurecr.io'
@@ -14,9 +10,8 @@ variables:
   tag: '$(Build.BuildId)'
   appName: 'Azure-test-App-Two'
   azureSubscription: 'Azure subscription 1 (12d4a125-7d4d-45ad-8101-2ba4e5ce1593)'
-  # Agent VM image name
   vmImageName: 'ubuntu-latest'
-  
+
 stages:
 - stage: Build
   displayName: Build stage
@@ -35,9 +30,17 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
-    ## Add the below snippet at the end of your pipeline
+
+- stage: Test
+  displayName: Test
+  jobs:
+  - job: Test
+    displayName: Test
+    steps:
+    - bash: echo "Hello, World!"
+
 - stage: Deploy
-  displayName: Build stage
+  displayName: Deploy
   jobs:
   - job: Deploy
     displayName: Deploy
