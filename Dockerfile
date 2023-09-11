@@ -6,6 +6,8 @@ COPY package.json .
 
 RUN npm install
 
+RUN npm init playwright@latest
+
 COPY . .
 
 EXPOSE 3000
