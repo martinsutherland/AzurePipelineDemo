@@ -27,14 +27,14 @@ stages:
               docker build -t docker-app .
 
 
-              docker run -p 3000:3000 -d --name docker-app-container docker-app
+              docker run -p 3000:3000 -d --name docker-app
 
       - job: RunTestsInDocker
         displayName: Run Tests in Docker Container
         steps:
           - script: |
 
-              docker exec docker-app-container npx playwright test /tests/example.spec.ts
+              npx playwright test /tests/example.spec.ts
             displayName: "Run Tests in Docker"
 
       - job: StopDockerContainer
