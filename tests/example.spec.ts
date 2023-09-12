@@ -6,7 +6,7 @@ test('has h1', async ({ page }) => {
   const header = page.locator('h1')
 
   // Expect a title "to contain" a substring.
-  await expect(header).toHaveText("Hello, World 2023!")
+  await expect(header).toHaveText("Hello, World 2022!")
 });
 
 test('has h2', async ({ page }) => {
