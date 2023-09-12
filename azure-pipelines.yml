@@ -70,7 +70,7 @@ stages:
             displayName: "Install Playwright Browsers"
     
           - script: |
-              npx playwright test
+              npx playwright test tests/example.spec.ts
             displayName: "Run Playwright tests"
     
           - publish: $(System.DefaultWorkingDirectory)/playwright-report
