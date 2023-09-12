@@ -49,7 +49,7 @@ stages:
             inputs:
               script: |
                 docker run -p 3000:3000 -d --name $(containerRegistry)/$(imageRepository):$(tag)
-                docker pull mcr.microsoft.com/playwright:v1.37.0-jammy
+                
 
   
   - stage: Test
@@ -64,6 +64,7 @@ stages:
             displayName: Test stage
             inputs:
               script: |
+                docker pull mcr.microsoft.com/playwright:v1.37.0-jammy
                 docker run -it --rm --ipc=host mcr.microsoft.com/playwright:v1.37.0-jammy /bin/bash
                 npx playwright test /tests/example.spec.ts
 
