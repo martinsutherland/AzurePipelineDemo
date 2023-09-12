@@ -50,8 +50,8 @@ stages:
               script: |
                 docker run -p 3000:3000 -d --name $(containerRegistry)/$(imageRepository):$(tag)
                 
-      - job: test
-        timeoutInMinutes: '60'
+      - job: Test
+        timeoutInMinutes: '10'
         pool:
           vmImage: "ubuntu-latest"
     
