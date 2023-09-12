@@ -1,3 +1,4 @@
+
 trigger:
   - main
 
@@ -16,58 +17,45 @@ variables:
   uiSource: "/src"
 
 stages:
-  - stage: Test
-    displayName: Test stage
-    jobs:
-      - job: BuildAndRunDocker
-        displayName: Build and Run Docker Container
-        steps:
-          - script: |
-              docker build -t docker-app .
-              docker run -p 3000:3000 -d --name docker-app-container docker-app
-
-      - job: RunTestsInDocker
-        displayName: Run Tests in Docker Container
-        steps:
-          - script: |
-              npx playwright test /tests/example.spec.ts
-            displayName: "Run Tests in Docker"
-
-      - job: StopDockerContainer
-        displayName: Stop Docker Container
-        steps:
-          - script: |
-              docker stop docker-app-container
-              docker rm docker-app-container
-            displayName: "Stop Docker Container"
-
-  - stage: Build
-    displayName: Build stage
-    jobs:
-      - job: Build
-        displayName: Build
-        pool:
+- stage: Build
+  displayName: 'Build Docker Image'
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
           vmImage: $(vmImageName)
-        steps:
-          - task: Docker@2
-            displayName: Push stage
-            inputs:
-              command: buildAndPush
-              repository: $(imageRepository)
-              dockerfile: $(dockerfilePath)
-              containerRegistry: $(dockerRegistryServiceConnection)
-              tags: |
+
+    steps:
+    - task: Docker@2
+      inputs:
+        command: build
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
                 $(tag)
 
-  - stage: Deploy
-    displayName: Deploy
-    jobs:
-      - job: Deploy
-        displayName: Deploy
-        steps:
-          - task: AzureWebAppContainer@1
-            displayName: "Deploy stage"
-            inputs:
-              azureSubscription: $(azureSubscription)
-              appName: $(appName)
-              imageName: $(containerRegistry)/$(imageRepository):$(tag)
+- stage: Test
+  displayName: 'Test Dockerized App'
+  jobs:
+  - job: Test
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: $(dockerRegistryServiceConnection)
+        repository: $(imageRepository)
+        command: 'run'
+        arguments: '-d -p 3000:3000 --name ms-container $(imageRepository)'
+        
+- job: RunPlaywrightTests
+  steps:
+  - script: |
+      docker exec ms-container npx playwright test
+    displayName: 'Run Playwright Tests'
+
+- job: StopContainer
+  steps:
+  - script: |
+      docker stop ms-container
+      docker rm ms-container
+    displayName: 'Stop and Remove Container'
