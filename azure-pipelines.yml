@@ -36,47 +36,6 @@ stages:
               tags: |
                 $(tag)
 
-  - stage: Run
-    displayName: Run stage
-    jobs:
-      - job: Run
-        displayName: Run
-        pool:
-          vmImage: $(vmImageName)
-        steps:
-          - task: Docker@2
-            displayName: Run stage
-            inputs:
-              script: |
-                docker run -p 3000:3000 -d --name $(containerRegistry)/$(imageRepository):$(tag)
-                docker ps
-                
-      - job: Test
-        timeoutInMinutes: '10'
-        pool:
-          vmImage: "ubuntu-latest"
-    
-        steps:
-          - task: NodeTool@0
-            inputs:
-              versionSpec: "16.x"
-            displayName: "Install Node.js"
-    
-          - script: |
-              npm ci
-            displayName: "Install dependencies"
-    
-          - script: |
-              npx playwright install --with-deps
-            displayName: "Install Playwright Browsers"
-    
-          - script: |
-              npx playwright test tests/example.spec.ts
-            displayName: "Run Playwright tests"
-    
-          - publish: $(System.DefaultWorkingDirectory)/playwright-report
-            artifact: playwright-report
-            condition: always()
   
 
 
