@@ -49,6 +49,7 @@ stages:
             inputs:
               script: |
                 docker run -p 3000:3000 -d --name $(containerRegistry)/$(imageRepository):$(tag)
+                docker ps
                 
       - job: Test
         timeoutInMinutes: '10'
