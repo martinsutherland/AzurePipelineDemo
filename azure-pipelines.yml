@@ -1,7 +1,9 @@
 trigger:
   branches:
-    exclude:
-      - '*'
+    include:
+      - main
+      - develop
+
 
 resources:
   - repo: self
