@@ -6,7 +6,7 @@ resources:
 
 variables:
   dockerRegistryServiceConnection: "70193de8-17c3-4d45-aed9-7b6d459cb210"
-  imageRepository: "martinsutherlandazurepipelinedemo"
+  imageRepository: "docker-test-app"
   containerRegistry: "customersapp.azurecr.io"
   dockerfilePath: "$(Build.SourcesDirectory)/Dockerfile"
   tag: "$(Build.BuildId)"
