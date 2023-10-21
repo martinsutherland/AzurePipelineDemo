@@ -6,7 +6,7 @@ const App = () => {
     
       
       <div className='data'>
-        <div> <h1>Hello, Locla Agent!</h1></div>
+        <div> <h1>Hello, Local Agent!</h1></div>
      </div>
       
    
