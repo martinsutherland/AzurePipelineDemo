@@ -1,5 +1,5 @@
 trigger:
-  - develop
+  - test
 
 resources:
   - repo: self
