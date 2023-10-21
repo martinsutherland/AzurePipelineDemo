@@ -1,0 +1,57 @@
+trigger:
+  branches:
+    exclude:
+      - '*'
+
+resources:
+  - repo: self
+
+variables:
+  dockerRegistryServiceConnection: "70193de8-17c3-4d45-aed9-7b6d459cb210"
+  imageRepository: "martinsutherlandazurepipelinedemo"
+  containerRegistry: "customersapp.azurecr.io"
+  dockerfilePath: "$(Build.SourcesDirectory)/Dockerfile"
+  tag: "$(Build.BuildId)"
+  azureSubscription: "Azure subscription 1 (12d4a125-7d4d-45ad-8101-2ba4e5ce1593)"
+  vmImageName: "ubuntu-latest"
+  uiSource: "/src"
+
+stages:
+  - stage: Build
+    displayName: Build stage
+    jobs:
+      - job: Build
+        displayName: Build
+        pool:
+          name: LocalMContainer  
+        steps:
+          - task: Docker@2
+            displayName: Push stage
+            inputs:
+              command: buildAndPush
+              repository: $(imageRepository)
+              dockerfile: $(dockerfilePath)
+              containerRegistry: $(dockerRegistryServiceConnection)
+              tags: |
+                $(tag)
+
+  - stage: Deploy
+    displayName: Deploy
+    jobs:
+      - job: Deploy
+        displayName: Deploy
+        steps:
+          - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/main') }}:
+            - task: AzureWebAppContainer@1
+              displayName: "Deploy to preprod"
+              inputs:
+                azureSubscription: $(azureSubscription)
+                appName: "preprod-env-01"
+                imageName: $(containerRegistry)/$(imageRepository):$(tag)
+          - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/develop') }}:
+            - task: AzureWebAppContainer@1
+              displayName: "Deploy to dev"
+              inputs:
+                azureSubscription: $(azureSubscription)
+                appName: "dev-env-01"
+                imageName: $(containerRegistry)/$(imageRepository):$(tag)
