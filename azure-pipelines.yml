@@ -22,7 +22,7 @@ stages:
       - job: Build
         displayName: Build
         pool:
-          vmImage: $(vmImageName)
+          name: LocalMContainer  
         steps:
           - task: Docker@2
             displayName: Push stage
